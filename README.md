@@ -28,6 +28,15 @@ Before touching your save files, always create a fallback safety net:
 4. In the new JSON window, look at the left sidebar and click on **DiscoveryManagerData**.
 5. Click inside the data field, press `ALT + A` to select everything, copy it, and paste it into a blank text file named `temp.json`.
 
+If you use No Man's Sky Save Editor (NMSE) instead of NomNom:
+1. Open your save in NMSE.
+2. Go to Edit raw JSON.
+3. Find DiscoveryManagerData.
+4. Export/copy the contents to temp.json.
+5. Run NMSDiscoveryRepair.
+6. Import the resulting temp_repaired.json back into the same DiscoveryManagerData node.
+7. Save the game.
+
 ### 3. Run the Repair Tool
 1. Download the `NMS_Discovery_Repair_v1.0.zip` package from the **Releases** section of this repository.
 2. Extract the application files into the **same folder** where you saved your `temp.json` file.
