@@ -3,9 +3,18 @@
 A lightweight C# console application designed to fix the infinite "First Contact" scanning loop bug introduced in the **No Man's Sky Cosmos Update**.
 
 ## The Problem
-When exploring heavily populated areas or community hubs (like Expedition systems), your game cache records other players' Steam usernames. If a username contains **invalid, unescaped, or special characters**, the game client's local JSON database serialization breaks. 
 
-While your primary game state (inventory, ships, bases) saves perfectly, the `DiscoveryManagerData` string array gets permanently locked in a silent overflow loop. Your local scan memory resets every few seconds—causing planets to stay "Unknown" and making it impossible to permanently record or return to new Paradise planets.
+Following the **No Man's Sky Cosmos Update**, some long-running saves can experience a discovery persistence problem.
+
+Previously discovered planets, fauna, flora, minerals, and other discoveries may temporarily appear correctly and then revert to **Unknown** or **First Contact** after leaving the discovery or returning to it later.
+
+The problem appears to affect the local `DiscoveryManagerData` stored in the save. The exact cause of the problem has **not yet been established**.
+
+Testing performed during development of this tool showed that the problem is not simply caused by the presence of other players' usernames or by special characters in those usernames.
+
+The Repair tool provides a workaround by rebuilding the local discovery record using the player's own discovery entries while preserving the rest of the exported `DiscoveryManagerData` structure.
+
+**This is a workaround, not a confirmed fix for the underlying game bug.**
 
 ## How This Fix Works
 This tool surgically parses your active `DiscoveryManagerData` structure, maps it strictly against your own account data, and **strips away foreign player entries containing the formatting landmines**. Your active logs will safely reset, allowing you to scan and record planets normally again.
@@ -51,3 +60,160 @@ If you use No Man's Sky Save Editor (NMSE) instead of NomNom:
 4. Launch No Man's Sky. When Steam detects the file change, it will prompt you whether to use the Local file or Cloud file—**select Local File** to force Steam to overwrite its broken cloud cache.
 
 Your scanning and exploration logs will now permanently track and hold your discoveries again!
+
+
+
+
+## NMS Discovery Merge
+
+The **NMS Discovery Merge** tool is intended for players who previously used the Discovery Repair tool and want to restore their historical discovery records after Hello Games has fixed the underlying discovery persistence problem.
+
+### ⚠️ IMPORTANT — Do Not Use This During the Current Bug
+
+The Merge tool **does not fix the current No Man's Sky discovery bug**.
+
+If the game is still affected by the discovery persistence problem, adding the historical discovery records back may cause the problem to return.
+
+**Only use the Merge tool after a game update has fixed the underlying discovery problem.**
+
+### What It Does
+
+The Merge tool combines:
+
+- Your historical discovery database (`_backup.json`)
+- Your current working discovery database (`new.json`)
+
+It creates:
+
+```text
+merged.json
+````
+
+The tool is designed to:
+
+* Preserve your current discoveries.
+* Restore historical discoveries from the backup.
+* Match records by RID where available.
+* Use the legacy discovery identity when a RID is unavailable.
+* Preserve original discovery timestamps.
+* Preserve original discoverer names.
+* Preserve existing RIDs.
+* Preserve `Available` and `Enqueued` discovery data.
+* Avoid creating or inventing RIDs.
+* Avoid modifying the original `_backup.json` or `new.json` files.
+* Create a backup of the current discovery data before producing the merged file.
+
+### Files
+
+The Merge tool expects the following files in the same directory:
+
+```text
+_backup.json
+new.json
+```
+
+Where:
+
+**`_backup.json`**
+
+Your original historical discovery data saved before using the Repair tool.
+
+**`new.json`**
+
+Your current working discovery data from the repaired save.
+
+The tool produces:
+
+```text
+merged.json
+```
+
+and creates a backup of the current data:
+
+```text
+new_merge_backup.json
+```
+
+### Preparing the Files
+
+Both files must contain the `DiscoveryManagerData` exported from your No Man's Sky save.
+
+#### `_backup.json`
+
+This should be your **original historical discovery data**, saved before using the Repair tool.
+
+#### `new.json`
+
+This should be the **current working discovery data** from your repaired save.
+
+To export the current discovery data:
+
+1. Open your save in **NomNom**.
+2. Select your latest save (**Last Save**).
+3. Go to **Save → Edit JSON (Advanced)**.
+4. Select **DiscoveryManagerData**.
+5. Click inside the data field and press `ALT + A`.
+6. Copy the contents into a file named:
+
+```text
+new.json
+````
+
+Place `new.json` and `_backup.json` in the same folder as `NMSDiscoveryMerge.exe`.
+
+Then your folder looks like:
+
+```text
+NMSDiscoveryMerge
+├── NMSDiscoveryMerge.exe
+├── _backup.json
+└── new.json
+````
+
+And the tool produces:
+
+```text
+merged.json
+new_merge_backup.json
+```
+### Merge Process
+
+```text
+Historical discovery data
+        _backup.json
+              │
+              │
+              ├──────────────┐
+              │              │
+              ▼              ▼
+                         new.json
+                    Current working data
+              │              │
+              └──────┬───────┘
+                     ▼
+              NMS Discovery Merge
+                     │
+                     ▼
+                merged.json
+```
+
+The original source files are not modified.
+
+### Recommended Safety Procedure
+
+Before using the merged file:
+
+1. Make a complete backup of your current No Man's Sky save.
+2. Keep `_backup.json` somewhere safe.
+3. Keep `new.json` somewhere safe.
+4. Run the Merge tool.
+5. Review the diagnostic output.
+6. Only then import `merged.json` into `DiscoveryManagerData`.
+7. Save the game.
+8. Keep your backup until you have confirmed that your historical discoveries are working correctly.
+
+### Important
+
+The Merge tool is a **data preservation and restoration utility**. It does not repair or alter the No Man's Sky discovery system itself.
+
+The exact cause of the discovery persistence problem is not established by this project. The Merge tool therefore deliberately avoids modifying historical discovery data unnecessarily.
