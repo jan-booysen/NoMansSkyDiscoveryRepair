@@ -3,7 +3,6 @@
 A lightweight C# console application designed to fix the infinite "First Contact" scanning loop bug introduced in the **No Man's Sky Cosmos Update**.
 
 ## The Problem
-
 Following the **No Man's Sky Cosmos Update**, some long-running saves can experience a discovery persistence problem.
 
 Previously discovered planets, fauna, flora, minerals, and other discoveries may temporarily appear correctly and then revert to **Unknown** or **First Contact** after leaving the discovery or returning to it later.
@@ -78,13 +77,44 @@ Your original `temp.json` can also be used as the historical backup if you still
 
 **Do not delete either file until you are certain you no longer need your historical discovery data.**
 
+```text
+                 NOW
+                  │
+             temp.json
+          original data
+                  │
+                  ▼
+        NMS Discovery Repair
+                  │
+          ┌───────┴───────┐
+          ▼               ▼
+   temp_repaired.json   temp_backup.json
+          │               │
+          ▼               │
+     Working save         │
+                          │
+                    KEEP THIS!
+                          │
+                          │  Hello Games fixes bug
+                          ▼
+                    _backup.json
+                          +
+                       new.json
+                          │
+                          ▼
+                 NMS Discovery Merge
+                          │
+                          ▼
+                    merged.json
+````
+
+
 
 Your scanning and exploration logs will now permanently track and hold your discoveries again!
 
 
 
-
-## NMS Discovery Merge
+# NMS Discovery Merge
 
 The **NMS Discovery Merge** tool is intended for players who previously used the Discovery Repair tool and want to restore their historical discovery records after Hello Games has fixed the underlying discovery persistence problem.
 
