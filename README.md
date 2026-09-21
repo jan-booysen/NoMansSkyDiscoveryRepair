@@ -52,12 +52,32 @@ If you use No Man's Sky Save Editor (NMSE) instead of NomNom:
 3. Run the executable console app and follow the on-screen prompts.
 4. The tool will display a list of all Usernames and Steam IDs found in the file. **Select your profile name/Steam ID** and hit `Enter`.
 5. The application will instantly output a repaired file named `temp_repaired.json`.
+6. **Important:** The Repair app creates a `temp_backup.json` file containing your original discovery data. **Keep this file safe!**.
+If Hello Games fixes the underlying discovery problem in a future update and you want to restore your historical discovery data, you can use this file with the **NMS Discovery Merge** tool.
 
 ### 4. Inject and Save
 1. Open `temp_repaired.json`, select all of its contents, and copy them.
 2. Go back to your open Nomnom JSON window, overwrite the existing **DiscoveryManagerData** content completely with your clean data.
 3. In Nomnom, go to the top **File** menu and click **Save**.
 4. Launch No Man's Sky. When Steam detects the file change, it will prompt you whether to use the Local file or Cloud file—**select Local File** to force Steam to overwrite its broken cloud cache.
+
+**Important:** The Repair app creates a `temp_backup.json` file containing your original discovery data. **Keep this file safe!**
+If Hello Games fixes the underlying discovery problem in a future update and you want to restore your historical discovery data, you can use this file with the **NMS Discovery Merge** tool.
+
+Before using the Merge tool, rename:
+
+```text
+temp_backup.json
+````
+to:
+```text
+_backup.json
+```
+
+Your original `temp.json` can also be used as the historical backup if you still have it.
+
+**Do not delete either file until you are certain you no longer need your historical discovery data.**
+
 
 Your scanning and exploration logs will now permanently track and hold your discoveries again!
 
